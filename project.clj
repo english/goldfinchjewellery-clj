@@ -4,6 +4,7 @@
   :dependencies [[org.clojure/clojure "1.5.1"]
                  [compojure "1.1.6"]
                  [hiccup "1.0.4"]
+                 [markdown-clj "0.9.43"]
                  [org.clojure/java.jdbc "0.2.3"]
                  [org.xerial/sqlite-jdbc "3.7.2"]
                  [ring-server "0.3.0"]]
