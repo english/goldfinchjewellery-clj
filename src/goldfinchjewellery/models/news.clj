@@ -2,8 +2,8 @@
   (:require [clojure.java.jdbc :as sql :refer [do-prepared insert-values
                                                with-connection]]))
 
-(def db {:classname "org.sqlite.JDBC",
-         :subprotocol "sqlite",
+(def db {:classname "org.sqlite.JDBC"
+         :subprotocol "sqlite"
          :subname "db.sq3"})
 
 (defn create-table []

@@ -1,5 +1,6 @@
 (ns goldfinchjewellery.views.news
-  (:require [goldfinchjewellery.views.layout :as layout]
+  (:require [clojure.data.json :as json]
+            [goldfinchjewellery.views.layout :as layout]
             [hiccup.form :refer [drop-down form-to hidden-field label
                                  submit-button text-area]]
             [markdown.core :refer [md-to-html-string]]))
@@ -10,13 +11,21 @@
     [:table.table
      [:thead [:th "Content"] [:th "Category"] [:th]]
      [:tbody
-      (for [news-item (news)]
+      (for [news-item news]
         [:tr
          [:td (md-to-html-string (:content news-item))]
          [:td [:p.category (:category news-item)]]
          [:td (form-to {:class "form"} [:post (str "/news/" (:id news-item))]
                        (hidden-field "_method" "DELETE")
                        (submit-button {:class "btn btn-danger"} "Delete"))]])]]))
+
+(defn index-json [news]
+  {:status 200
+   :body (json/write-str
+           (->> news
+                (map #(assoc % :html (md-to-html-string (:content %))))
+                (map #(select-keys % [:category :html :created_at]))))
+   :headers {"Content-Type" "application/json"}})
 
 (defn news-new []
   (layout/common

@@ -5,7 +5,8 @@
             [ring.util.response :refer [redirect]]))
 
 (defroutes news-routes
-  (GET "/news" [] (view/index model/all))
+  (GET "/news" [] (view/index (model/all)))
+  (GET "/news.json" [] (view/index-json (model/all)))
   (GET "/news/new" [] (view/news-new))
   (POST "/news" [category content]
         (model/create category content)
