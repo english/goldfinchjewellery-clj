@@ -1,20 +1,25 @@
 (ns goldfinchjewellery.views.layout
-  (:require [hiccup.page :refer [html5 include-css]]))
+  (:require [hiccup.element :refer [link-to unordered-list]]
+            [hiccup.page :refer [html5 include-css]]))
+
+(defn navbar [& items]
+  [:nav.navbar.navbar-default {:role "navigation"}
+   [:div.conainer-fluid
+    [:div.navbar-header
+     [:span.navbar-brand "Admin"]]
+    [:div.collapse.navbar-collapse
+     (unordered-list {:class "nav navbar-nav"}
+                     (for [[href text] items]
+                       [:li (link-to href text)]))]]])
 
 (defn common [& content]
   (html5
     [:head
      [:title "Welcome to goldfinchjewellery"]
-     [:link {:rel "stylesheet" :href "//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"}]
-     (include-css "/css/screen.css")]
+     (include-css "//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"
+                  "/css/screen.css")]
     [:body
      [:div.container
-      [:nav.navbar.navbar-default {:role "navigation"}
-       [:div.conainer-fluid
-        [:div.navbar-header
-         [:span.navbar-brand "Admin"]]
-        [:div.collapse.navbar-collapse
-         [:ul.nav.navbar-nav
-          [:li [:a {:href "/news"} "Manage News"]]
-          [:li [:a {:href "/jewellery"} "Manage Jewellery"]]]]]]
+      (navbar ["/news" "Manage News"]
+              ["/jewellery" "Manage Jewellery"])
       content]]))
