@@ -1,10 +1,13 @@
 (ns goldfinchjewellery.handler
-  (:require [compojure.core :refer [GET defroutes routes]]
+  (:require [compojure.core :refer [GET defroutes]]
             [compojure.handler :as handler]
             [compojure.route :as route]
+            [goldfinchjewellery.routes.jewellery :refer [jewellery-routes]]
             [goldfinchjewellery.routes.news :refer [news-routes]]
             [goldfinchjewellery.routes.session :refer [session-routes]]
             [hiccup.middleware :refer [wrap-base-url]]
+            [noir.util.middleware :as middleware]
+            [ring.middleware.session.cookie :refer [cookie-store]]
             [ring.util.response :refer [redirect]]))
 
 (defn init []
@@ -19,6 +22,9 @@
   (route/not-found "Not Found"))
 
 (def app
-  (-> (routes news-routes session-routes app-routes)
+  (-> (middleware/app-handler
+        [jewellery-routes news-routes session-routes app-routes]
+        :session-options
+        {:store (cookie-store) :secure true})
       (handler/site)
       (wrap-base-url)))
