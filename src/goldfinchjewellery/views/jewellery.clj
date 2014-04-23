@@ -2,13 +2,14 @@
   (:require [goldfinchjewellery.models.jewellery :as model]
             [goldfinchjewellery.views.helpers :refer [control]]
             [goldfinchjewellery.views.layout :as layout]
+            [hiccup.element :refer [link-to]]
             [hiccup.form :refer [drop-down form-to hidden-field submit-button
                                  text-area text-field]]
             [markdown.core :refer [md-to-html-string]]))
 
 (defn index [jewellery]
   (layout/common
-    [:a.btn.btn-primary {:href "/jewellery/new"} "New Jewellery Item"]
+    (link-to {:class "btn btn-primary"} "/jewellery/new" "New Jewellery Item")
     [:table.table
      [:thead [:th "Name"] [:th "Description"] [:th "Gallery"] [:th "Image Path"]]
      [:tbody

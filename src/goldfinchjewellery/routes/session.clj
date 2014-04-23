@@ -4,6 +4,8 @@
             [goldfinchjewellery.views.session :as view]
             [noir.session :as session]
             [noir.util.crypt :as crypt]
+            [noir.validation :refer [errors? get-errors has-value? is-email?
+                                     min-length? rule]]
             [ring.util.response :refer [redirect]]))
 
 (defn authenticate [email password]
@@ -12,21 +14,25 @@
          (crypt/compare password (:encrypted_password user)))))
 
 (defn create [email password]
-  (cond
-    (empty? email)
-    (view/sessions-new email password "Some dummy forgot to leave an email")
-    (empty? password)
-    (view/sessions-new email password "Don't you have a password?")
-    (authenticate email password)
+  (rule (is-email? email)
+        [:email "Valid email required"])
+  (rule (and (has-value? password)
+             (min-length? password 6))
+        [:password "Password must be at least 6 characters"])
+  (rule (authenticate email password)
+        [:mismatch "Wrong username or password"])
+  (if (errors?)
+    (view/sessions-new email password (get-errors))
     (do
       (session/put! :user_id (:id (users/find-by-email email)))
-      (redirect "/news"))
-    :else
-    (view/sessions-new email password "Wrong username or password")))
+      (redirect "/news"))))
 
 (defroutes session-routes
-  (GET "/sessions/new" []
+  (GET "/login" []
        (if (session/get :user_id)
          (redirect "/news")
          (view/sessions-new)))
+  (GET "/logout" []
+       (session/remove! :user_id)
+       (redirect "/login"))
   (POST "/sessions" [email password] (create email password)))

@@ -3,13 +3,14 @@
             [goldfinchjewellery.models.news :as model]
             [goldfinchjewellery.views.helpers :refer [control]]
             [goldfinchjewellery.views.layout :as layout]
-            [hiccup.form :refer [drop-down form-to hidden-field label
-                                 submit-button text-area]]
+            [hiccup.element :refer [link-to]]
+            [hiccup.form :refer [drop-down form-to hidden-field submit-button
+                                 text-area]]
             [markdown.core :refer [md-to-html-string]]))
 
 (defn index [news]
   (layout/common
-    [:a.btn.btn-primary {:href "/news/new"} "New News Item"]
+    (link-to {:class "btn btn-primary"} "/news/new" "New News Item")
     [:table.table
      [:thead [:th "Content"] [:th "Category"] [:th]]
      [:tbody

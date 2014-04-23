@@ -4,6 +4,7 @@
             [goldfinchjewellery.views.jewellery :as view]
             [noir.response :refer [redirect]]
             [noir.session :as session]
+            [noir.util.route :refer [restricted]]
             [noir.validation :refer [errors? get-errors has-values? rule]]))
 
 (defn create [name description gallery image-path]
@@ -17,20 +18,15 @@
 
 (defroutes jewellery-routes
   (GET "/jewellery" []
-       (if (session/get :user_id)
-         (view/index (model/all))
-         (redirect "/sessions/new")))
+       (restricted
+         (view/index (model/all))))
   (GET "/jewellery/new" []
-       (if (session/get :user_id)
-         (view/new-jewellery-item)
-         (redirect "/sessions/new")))
+       (restricted
+         (view/new-jewellery-item)))
   (POST "/jewellery" [name description gallery image_path]
-        (if (session/get :user_id)
-          (create name description gallery image_path)
-          (redirect "/sessions/new")))
+        (restricted
+          (create name description gallery image_path)))
   (DELETE "/jewellery/:id" [id]
-          (if (session/get :user_id)
-            (do
-              (model/delete id)
-              (redirect "/jewellery"))
-            (redirect "/sessions/new"))))
+          (restricted
+            (model/delete id)
+            (redirect "/jewellery"))))
