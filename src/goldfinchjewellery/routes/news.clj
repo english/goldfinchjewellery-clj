@@ -2,15 +2,26 @@
   (:require [compojure.core :refer [DELETE GET POST defroutes]]
             [goldfinchjewellery.models.news :as model]
             [goldfinchjewellery.views.news :as view]
+            [noir.session :as session]
             [ring.util.response :refer [redirect]]))
 
 (defroutes news-routes
-  (GET "/news" [] (view/index (model/all)))
+  (GET "/news" []
+       (if (session/get :user_id)
+         (view/index (model/all))
+         (redirect "/sessions/new")))
   (GET "/news.json" [] (view/index-json (model/all)))
-  (GET "/news/new" [] (view/news-new))
+  (GET "/news/new" []
+       (if (session/get :user_id)
+         (view/news-new)
+         (redirect "/sessions/new")))
   (POST "/news" [category content]
-        (model/create category content)
-        (redirect "/news"))
+       (if (session/get :user_id)
+         (do (model/create category content)
+             (redirect "/news"))
+         (redirect "/sessions/new")))
   (DELETE "/news/:id" [id]
-          (model/delete id)
-          (redirect "/news")))
+       (if (session/get :user_id)
+         (do (model/delete id)
+             (redirect "/news"))
+         (redirect "/sessions/new"))))
