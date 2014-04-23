@@ -1,7 +1,8 @@
 (ns goldfinchjewellery.repl
-  (:use goldfinchjewellery.handler
-        ring.server.standalone
-        [ring.middleware file-info file]))
+  (:require [goldfinchjewellery.handler :refer :all]
+            [ring.middleware.file :refer :all]
+            [ring.middleware.file-info :refer :all]
+            [ring.server.standalone :refer :all]))
 
 (defonce server (atom nil))
 
