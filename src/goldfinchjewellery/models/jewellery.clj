@@ -32,6 +32,13 @@
     db
     (sql/do-prepared "DELETE FROM jewellery WHERE id = ?" [id])))
 
+(defn get-by-id [id]
+  (sql/with-connection
+    db
+    (sql/with-query-results res
+      ["SELECT * FROM jewellery WHERE id = ?" id]
+      (first res))))
+
 (defn create [name description gallery image-path]
   (sql/with-connection
     db
