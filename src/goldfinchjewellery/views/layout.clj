@@ -23,5 +23,6 @@
      [:div.container
       (navbar ["/news" "Manage News"]
               ["/jewellery" "Manage Jewellery"]
-              (if (session/get :user_id) ["/logout" "Logout"]))
+              (if (session/get :user_id)
+                ["/logout" "Logout"]))
       content]]))

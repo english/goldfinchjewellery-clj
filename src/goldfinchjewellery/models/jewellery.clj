@@ -32,7 +32,7 @@
     db
     (sql/do-prepared "DELETE FROM jewellery WHERE id = ?" [id])))
 
-(defn create [name gallery description image-path]
+(defn create [name description gallery image-path]
   (sql/with-connection
     db
     (sql/insert-values

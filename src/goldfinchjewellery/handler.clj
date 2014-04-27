@@ -2,8 +2,10 @@
   (:require [compojure.core :refer [GET defroutes]]
             [compojure.handler :as handler]
             [compojure.route :as route]
-            [goldfinchjewellery.routes.jewellery :refer [jewellery-routes]]
-            [goldfinchjewellery.routes.news :refer [news-routes]]
+            [goldfinchjewellery.routes.jewellery
+             :refer [restricted-jewellery-routes unrestricted-jewellery-routes]]
+            [goldfinchjewellery.routes.news
+             :refer [restricted-news-routes unrestricted-news-routes]]
             [goldfinchjewellery.routes.session :refer [session-routes]]
             [hiccup.middleware :refer [wrap-base-url]]
             [noir.session :as session]
@@ -27,7 +29,9 @@
 
 (def app
   (-> (middleware/app-handler
-        [jewellery-routes news-routes session-routes app-routes]
+        [restricted-jewellery-routes unrestricted-jewellery-routes
+         restricted-news-routes unrestricted-news-routes session-routes
+         app-routes]
         :session-options
         {:store (cookie-store) :secure true}
         :access-rules

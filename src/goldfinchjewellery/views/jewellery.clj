@@ -1,11 +1,20 @@
 (ns goldfinchjewellery.views.jewellery
-  (:require [goldfinchjewellery.models.jewellery :as model]
+  (:require [clojure.data.json :as json]
+            [goldfinchjewellery.models.jewellery :as model]
             [goldfinchjewellery.views.helpers :refer [control]]
             [goldfinchjewellery.views.layout :as layout]
             [hiccup.element :refer [link-to]]
             [hiccup.form :refer [drop-down form-to hidden-field submit-button
                                  text-area text-field]]
             [markdown.core :refer [md-to-html-string]]))
+
+(defn index-json [jewellery]
+  {:status 200
+   :body (json/write-str
+           (->> jewellery
+                (map #(assoc % :html (md-to-html-string (:description %))))
+                (map #(select-keys % [:name :gallery :html :image_path]))))
+   :headers {"Content-Type" "application/json"}})
 
 (defn index [jewellery]
   (layout/common

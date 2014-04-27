@@ -2,23 +2,21 @@
   (:require [compojure.core :refer [DELETE GET POST defroutes]]
             [goldfinchjewellery.models.news :as model]
             [goldfinchjewellery.views.news :as view]
-            [noir.util.route :refer [restricted]]
+            [noir.util.route :refer [def-restricted-routes]]
             [ring.util.response :refer [redirect]]))
 
-(defroutes news-routes
+(def-restricted-routes restricted-news-routes
   (GET "/news" []
-       (restricted
-         (view/index (model/all))))
-  (GET "/news.json" []
-       (view/index-json (model/all)))
+       (view/index (model/all)))
   (GET "/news/new" []
-       (restricted
-         (view/news-new)))
+       (view/news-new))
   (POST "/news" [category content]
-        (restricted
-          (model/create category content)
-          (redirect "/news")))
+        (model/create category content)
+        (redirect "/news"))
   (DELETE "/news/:id" [id]
-          (restricted
-            (model/delete id)
-            (redirect "/news"))))
+          (model/delete id)
+          (redirect "/news")))
+
+(defroutes unrestricted-news-routes
+  (GET "/news.json" []
+       (view/index-json (model/all))))
