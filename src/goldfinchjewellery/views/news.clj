@@ -30,10 +30,12 @@
                 (map #(select-keys % [:category :html :created_at]))))
    :headers {"Content-Type" "application/json"}})
 
-(defn news-new [& [content]]
+(defn news-new [& [content errors]]
   (layout/common
     [:h1 "New News Item"]
     (form-to {:class "form form-horizontal"} [:post "/news"]
+             (if errors
+               [:div.col-sm-offset-2.col-sm-10 [:p.text-danger errors]])
              (control drop-down "category" model/categories)
              (control text-area "content" content {:rows "10"})
              [:div.form-group
