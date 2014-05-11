@@ -5,14 +5,20 @@
             [goldfinchjewellery.models.news :as model]
             [goldfinchjewellery.views.news :as view]
             [noir.util.route :refer [def-restricted-routes]]
-            [noir.validation :refer [has-value? valid-file?]]
+            [noir.validation :refer [errors? get-errors has-value? rule
+                                     valid-file?]]
             [ring.util.response :refer [redirect]]))
 
 (defn create [category content image]
-  (let [url (when (valid-file? image) (image-url image))]
-    (when (valid-file? image) (upload-image image))
-    (model/create category content url)
-    (redirect "/news")))
+  (let [url (when (valid-file? image)
+              (image-url image))]
+    (rule (has-value? content) [:content "can't be blank"])
+    (if (errors?)
+      (view/news-new content (get-errors))
+      (do (when (valid-file? image)
+            (upload-image image))
+          (model/create category content url)
+          (redirect "/news")))))
 
 (def-restricted-routes restricted-news-routes
   (GET "/news" []
@@ -24,7 +30,7 @@
           (create category content image)
           (view/news-new content "Conten't can't be blank")))
   (DELETE "/news/:id" [id]
-          (delete-image (model/get-by-id id))
+          (delete-image (model/get-image-url-by-id id))
           (model/delete id)
           (redirect "/news")))
 

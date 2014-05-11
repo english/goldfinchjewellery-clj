@@ -1,8 +1,8 @@
 (ns goldfinchjewellery.routes.jewellery
   (:require [compojure.core :refer [DELETE GET POST defroutes]]
-            [goldfinchjewellery.models.image :refer [delete-image upload-image]]
+            [goldfinchjewellery.models.image :refer [delete-image image-url
+                                                     upload-image]]
             [goldfinchjewellery.models.jewellery :as model]
-            [goldfinchjewellery.routes.news :refer [image-url]]
             [goldfinchjewellery.views.jewellery :as view]
             [noir.response :refer [redirect]]
             [noir.util.route :refer [def-restricted-routes]]
@@ -10,7 +10,7 @@
 
 (defn create [name description gallery image]
   (rule (has-values? [name description gallery image])
-        [:all "all fields are required"])
+        [:all "fields are required"])
   (if (errors?)
     (view/new-jewellery-item name description gallery image (get-errors))
     (do
@@ -26,7 +26,7 @@
   (POST "/jewellery" [name description gallery image]
         (create name description gallery image))
   (DELETE "/jewellery/:id" [id]
-          (delete-image (model/get-by-id id))
+          (delete-image (model/get-image-url-by-id id))
           (model/delete id)
           (redirect "/jewellery")))
 

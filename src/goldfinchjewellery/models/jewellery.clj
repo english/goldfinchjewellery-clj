@@ -18,7 +18,7 @@
       [:created_at "TIMESTAMP DEFAULT CURRENT_TIMESTAMP"]
       [:gallery "TEXT NOT NULL"]
       [:description "TEXT NOT NULL"]
-      [:image_path "STRING NOT NULL"])))
+      [:image_url "STRING NOT NULL"])))
 
 (defn all []
   (sql/with-connection
@@ -30,17 +30,17 @@
     db
     (sql/do-prepared "DELETE FROM jewellery WHERE id = ?" [id])))
 
-(defn get-by-id [id]
+(defn get-image-url-by-id [id]
   (sql/with-connection
     db
     (sql/with-query-results res
-      ["SELECT * FROM jewellery WHERE id = ?" id]
-      (first res))))
+      ["SELECT image_url FROM jewellery WHERE id = ?" id]
+      (:image_url (first res)))))
 
-(defn create [name description gallery image-path]
+(defn create [name description gallery image-url]
   (sql/with-connection
     db
     (sql/insert-values
       :jewellery
-      [:name :gallery :description :image_path]
-      [name   gallery  description  image-path])))
+      [:name :gallery :description :image_url]
+      [name   gallery  description  image-url])))

@@ -17,8 +17,8 @@
       (for [news-item news]
         [:tr
          [:td (md-to-html-string (:content news-item))
-          (if (:image_path news-item)
-              [:div (image (:image_path news-item))])]
+          (if (:image_url news-item)
+              [:div (image (:image_url news-item))])]
          [:td [:p.category (:category news-item)]]
          [:td (form-to {:class "form"} [:post (str "/news/" (:id news-item))]
                        (hidden-field "_method" "DELETE")

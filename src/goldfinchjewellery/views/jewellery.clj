@@ -13,26 +13,26 @@
    :body (json/write-str
            (->> jewellery
                 (map #(assoc % :html (md-to-html-string (:description %))))
-                (map #(select-keys % [:name :gallery :html :image_path]))))
+                (map #(select-keys % [:name :gallery :html :image_url]))))
    :headers {"Content-Type" "application/json"}})
 
 (defn index [jewellery]
   (layout/common
     (link-to {:class "btn btn-primary"} "/jewellery/new" "New Jewellery Item")
     [:table.table
-     [:thead [:th "Name"] [:th "Description"] [:th "Gallery"] [:th "Image Path"]]
+     [:thead [:th "Name"] [:th "Description"] [:th "Gallery"] [:th "Image"]]
      [:tbody
       (for [jewellery-item jewellery]
         [:tr
          [:td (:name jewellery-item)]
          [:td (md-to-html-string (:description jewellery-item))]
          [:td [:p.gallery (:gallery jewellery-item)]]
-         [:td [:img {:src (:image_path jewellery-item)}]]
+         [:td [:img {:src (:image_url jewellery-item)}]]
          [:td (form-to {:class "form"} [:post (str "/jewellery/" (:id jewellery-item))]
                        (hidden-field "_method" "DELETE")
                        (submit-button {:class "btn btn-danger"} "Delete"))]])]]))
 
-(defn new-jewellery-item [& [name description gallery image_path errors]]
+(defn new-jewellery-item [& [name description gallery image-url errors]]
   (layout/common
     [:h1 "New Jewellery Item"]
     (form-to {:enctype "multipart/form-data" :class "form form-horizontal"}

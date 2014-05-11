@@ -16,7 +16,7 @@
                       [:created_at "TIMESTAMP DEFAULT CURRENT_TIMESTAMP"]
                       [:category "TEXT NOT NULL"]
                       [:content "TEXT NOT NULL"]
-                      [:image_path "STRING"])))
+                      [:image_url "STRING"])))
 
 (defn all []
   (sql/with-connection
@@ -24,22 +24,19 @@
          ["SELECT * FROM news ORDER BY category, created_at DESC"]
          (doall res))))
 
-(defn get-by-id [id]
-  (sql/with-connection
-    db
+(defn get-image-url-by-id [id]
+  (sql/with-connection db
     (sql/with-query-results res
-      ["SELECT * FROM news WHERE id = ?" id]
-      (first res))))
+      ["SELECT image_url FROM news WHERE id = ?" id]
+      (:image_url (first res)))))
 
-(defn create [category content & [image_path]]
-  (sql/with-connection
-    db
+(defn create [category content & [image-url]]
+  (sql/with-connection db
     (sql/insert-values
       :news
-      [:category :content :created_at :image_path]
-      [category content (java.util.Date.) image_path])))
+      [:category :content :created_at :image_url]
+      [category content (java.util.Date.) image-url])))
 
 (defn delete [id]
-  (sql/with-connection
-    db
+  (sql/with-connection db
     (sql/do-prepared "DELETE FROM news WHERE news.id = ?" [id])))

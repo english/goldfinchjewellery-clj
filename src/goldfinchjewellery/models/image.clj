@@ -18,8 +18,8 @@
       (.getPath)
       (s/replace-first "/" "")))
 
-(defn delete-image [item]
-  (let [s3-key (s3-key-for-image (:image_path item))]
+(defn delete-image [url]
+  (let [s3-key (s3-key-for-image url)]
     (aws/delete-object cred bucket s3-key)))
 
 (defn upload-image [image]
