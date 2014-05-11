@@ -23,9 +23,7 @@
 (defn all []
   (sql/with-connection
     db
-    (sql/with-query-results res
-      ["SELECT * FROM jewellery"]
-      (doall res))))
+    (sql/with-query-results res ["SELECT * FROM jewellery"] (doall res))))
 
 (defn delete [id]
   (sql/with-connection
