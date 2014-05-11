@@ -3,6 +3,7 @@
             [goldfinchjewellery.models.news :as model]
             [goldfinchjewellery.views.helpers :refer [control]]
             [goldfinchjewellery.views.layout :as layout]
+            [hiccup.core :refer [html]]
             [hiccup.element :refer [image link-to]]
             [hiccup.form :refer [drop-down file-upload form-to hidden-field
                                  label submit-button text-area]]
@@ -17,8 +18,8 @@
       (for [news-item news]
         [:tr
          [:td (md-to-html-string (:content news-item))
-          (if (:image_url news-item)
-              [:div (image (:image_url news-item))])]
+          (when-let [image-url (:image_url news-item)]
+            [:div (image image-url)])]
          [:td [:p.category (:category news-item)]]
          [:td (form-to {:class "form"} [:post (str "/news/" (:id news-item))]
                        (hidden-field "_method" "DELETE")
@@ -28,7 +29,9 @@
   {:status 200
    :body (json/write-str
            (->> news
-                (map #(assoc % :html (md-to-html-string (:content %))))
+                (map #(assoc % :html (str (md-to-html-string (:content %))
+                                          (when-let [url (:image_url %)]
+                                            (html [:div (image url)])))))
                 (map #(select-keys % [:category :html :created_at]))))
    :headers {"Content-Type" "application/json"}})
 
