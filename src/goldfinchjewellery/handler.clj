@@ -26,11 +26,17 @@
   (route/resources "/")
   (route/not-found "Not Found"))
 
+(defn wrap-cors [handler]
+  (fn [request]
+    (let [response (handler request)]
+      (assoc-in response [:headers "Access-Control-Allow-Origin"] "*"))))
+
 (def app
   (-> (middleware/app-handler
         [restricted-jewellery-routes unrestricted-jewellery-routes restricted-news-routes unrestricted-news-routes session-routes app-routes]
         :session-options {:store (cookie-store) :secure true}
         :access-rules [{:redirect "/login" :rules [user-access]}])
       (handler/site)
+      (wrap-cors)
       (wrap-json-response)
       (wrap-base-url)))

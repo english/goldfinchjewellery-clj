@@ -6,27 +6,27 @@
             [hiccup.element :refer [link-to]]
             [hiccup.form :refer [drop-down file-upload form-to hidden-field
                                  label submit-button text-area text-field]]
-            [markdown.core :refer [md-to-html-string]]))
+            [markdown.core :refer [md-to-html-string]]
+            [ring.util.response :refer [response]]))
 
 (defn index-json [jewellery]
-  {:status 200
-   :body (json/write-str
-           (->> jewellery
-                (map #(assoc % :html (md-to-html-string (:description %))))
-                (map #(select-keys % [:name :gallery :html :image_url]))))
-   :headers {"Content-Type" "application/json"}})
+  (->> jewellery
+       (map #(assoc % :html (md-to-html-string (:description %))))
+       (map #(assoc % :image_path (:image_url %)))
+       (map #(select-keys % [:name :description :gallery :html :image_path]))
+       (assoc {} :jewellery)
+       (response)))
 
 (defn index [jewellery]
   (layout/common
     (link-to {:class "btn btn-primary"} "/jewellery/new" "New Jewellery Item")
     [:table.table
-     [:thead [:th "Name"] [:th "Description"] [:th "Gallery"] [:th "Image"]]
+     [:thead [:th "Gallery"] [:th "Description"] [:th "Image"]]
      [:tbody
       (for [jewellery-item jewellery]
         [:tr
-         [:td (:name jewellery-item)]
-         [:td (md-to-html-string (:description jewellery-item))]
          [:td [:p.gallery (:gallery jewellery-item)]]
+         [:td (md-to-html-string (:description jewellery-item))]
          [:td [:img {:src (:image_url jewellery-item)}]]
          [:td (form-to {:class "form"} [:post (str "/jewellery/" (:id jewellery-item))]
                        (hidden-field "_method" "DELETE")

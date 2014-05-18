@@ -1,10 +1,13 @@
 (ns goldfinchjewellery.views.news
-  (:require [goldfinchjewellery.models.news :as model]
+  (:require [clj-time.coerce :refer [from-long]]
+            [clj-time.format :refer [formatters unparse]]
+            [goldfinchjewellery.models.news :as model]
             [goldfinchjewellery.views.helpers :refer [control]]
             [goldfinchjewellery.views.layout :as layout]
             [hiccup.core :refer [html]]
             [hiccup.element :refer [image link-to]]
-            [hiccup.form :refer [drop-down file-upload form-to hidden-field label submit-button text-area]]
+            [hiccup.form :refer [drop-down file-upload form-to hidden-field
+                                 label submit-button text-area]]
             [markdown.core :refer [md-to-html-string]]
             [ring.util.response :refer [response]]))
 
@@ -17,20 +20,28 @@
   (layout/common
     (link-to {:class "btn btn-primary"} "/news/new" "New News Item")
     [:table.table
-     [:thead [:th "Content"] [:th "Category"] [:th]]
+     [:thead [:th "Category"] [:th "Content"] [:th]]
      [:tbody
       (for [news-item news]
         [:tr
-         [:td (news-body news-item)]
          [:td [:p.category (:category news-item)]]
+         [:td (news-body news-item)]
          [:td (form-to {:class "form"} [:post (str "/news/" (:id news-item))]
                        (hidden-field "_method" "DELETE")
                        (submit-button {:class "btn btn-danger"} "Delete"))]])]]))
 
+(defn iso8601 [time]
+  (let [date-time (from-long time)
+        formatter (formatters :date-time)]
+  (unparse formatter date-time)))
+
 (defn index-json [news]
   (->> news
        (map #(assoc % :html (news-body %)))
-       (map #(select-keys % [:category :html :created_at]))
+       (map #(assoc % :createdAt (iso8601 (:created_at %))))
+       (map #(assoc % :updatedAt (:createdAt %)))
+       (map #(select-keys % [:category :html :createdAt :updatedAt]))
+       (assoc {} :news)
        (response)))
 
 (defn news-new [& [content errors]]

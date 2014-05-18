@@ -5,8 +5,7 @@
          :subprotocol "sqlite"
          :subname "db.sq3"})
 
-(def categories
-  ["Stockists" "Events & Exhibitions" "Awards" "Press"])
+(def categories ["Stockists" "Events & Exhibitions" "Awards" "Press"])
 
 (defn create-news-table []
   (sql/with-connection
@@ -19,10 +18,10 @@
                       [:image_url "STRING"])))
 
 (defn all []
-  (sql/with-connection
-    db (sql/with-query-results res
-         ["SELECT * FROM news ORDER BY category, created_at DESC"]
-         (doall res))))
+  (sql/with-connection db
+    (sql/with-query-results res
+      ["SELECT * FROM news ORDER BY category, created_at DESC"]
+      (doall res))))
 
 (defn get-image-url-by-id [id]
   (sql/with-connection db
