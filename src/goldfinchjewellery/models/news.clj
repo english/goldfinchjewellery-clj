@@ -1,5 +1,5 @@
 (ns goldfinchjewellery.models.news
-  (:require [clojure.java.jdbc :as sql]))
+  (:require [clojure.java.jdbc.deprecated :as sql]))
 
 (def db {:classname "org.sqlite.JDBC"
          :subprotocol "sqlite"

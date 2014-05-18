@@ -1,13 +1,13 @@
 (ns goldfinchjewellery.views.news
-  (:require [clojure.data.json :as json]
-            [goldfinchjewellery.models.news :as model]
+  (:require [goldfinchjewellery.models.news :as model]
             [goldfinchjewellery.views.helpers :refer [control]]
             [goldfinchjewellery.views.layout :as layout]
             [hiccup.core :refer [html]]
             [hiccup.element :refer [image link-to]]
             [hiccup.form :refer [drop-down file-upload form-to hidden-field
                                  label submit-button text-area]]
-            [markdown.core :refer [md-to-html-string]]))
+            [markdown.core :refer [md-to-html-string]]
+            [ring.util.response :refer [response]]))
 
 (defn index [news]
   (layout/common
@@ -26,14 +26,11 @@
                        (submit-button {:class "btn btn-danger"} "Delete"))]])]]))
 
 (defn index-json [news]
-  {:status 200
-   :body (json/write-str
-           (->> news
-                (map #(assoc % :html (str (md-to-html-string (:content %))
-                                          (when-let [url (:image_url %)]
-                                            (html [:div (image url)])))))
-                (map #(select-keys % [:category :html :created_at]))))
-   :headers {"Content-Type" "application/json"}})
+  (->> news
+       (map #(assoc % :html (str (md-to-html-string (:content %))
+                                 (when-let [url (:image_url %)] (html [:div (image url)])))))
+       (map #(select-keys % [:category :html :created_at]))
+       (response)))
 
 (defn news-new [& [content errors]]
   (layout/common

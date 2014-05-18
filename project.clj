@@ -10,7 +10,8 @@
                  [org.clojure/java.jdbc "0.3.2"]
                  [org.xerial/sqlite-jdbc "3.7.2"]
                  [ring-server "0.3.0"]
-                 [clj-aws-s3 "0.3.9"]]
+                 [clj-aws-s3 "0.3.9"]
+                 [ring/ring-json "0.3.1"]]
   :plugins [[lein-ring "0.8.7"]]
   :ring {:handler goldfinchjewellery.handler/app
          :init goldfinchjewellery.handler/init
