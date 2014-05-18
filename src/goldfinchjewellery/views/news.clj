@@ -4,10 +4,14 @@
             [goldfinchjewellery.views.layout :as layout]
             [hiccup.core :refer [html]]
             [hiccup.element :refer [image link-to]]
-            [hiccup.form :refer [drop-down file-upload form-to hidden-field
-                                 label submit-button text-area]]
+            [hiccup.form :refer [drop-down file-upload form-to hidden-field label submit-button text-area]]
             [markdown.core :refer [md-to-html-string]]
             [ring.util.response :refer [response]]))
+
+(defn news-body [news-item]
+  (html
+    (md-to-html-string (:content news-item))
+    (when-let [url (:image_url news-item)] [:div (image url)])))
 
 (defn index [news]
   (layout/common
@@ -17,9 +21,7 @@
      [:tbody
       (for [news-item news]
         [:tr
-         [:td (md-to-html-string (:content news-item))
-          (when-let [image-url (:image_url news-item)]
-            [:div (image image-url)])]
+         [:td (news-body news-item)]
          [:td [:p.category (:category news-item)]]
          [:td (form-to {:class "form"} [:post (str "/news/" (:id news-item))]
                        (hidden-field "_method" "DELETE")
@@ -27,8 +29,7 @@
 
 (defn index-json [news]
   (->> news
-       (map #(assoc % :html (str (md-to-html-string (:content %))
-                                 (when-let [url (:image_url %)] (html [:div (image url)])))))
+       (map #(assoc % :html (news-body %)))
        (map #(select-keys % [:category :html :created_at]))
        (response)))
 
