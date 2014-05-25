@@ -19,7 +19,7 @@
   (println "goldfinchjewellery is shutting down"))
 
 (defn user-access [request]
-  (session/get :user_id))
+  (session/get :logged-in))
 
 (defroutes app-routes
   (GET "/" [] (redirect "/login"))

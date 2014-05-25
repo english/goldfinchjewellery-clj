@@ -25,6 +25,7 @@
             (serve (get-handler)
                    {:port port
                     :init init
+                    :open-browser? false
                     :auto-reload? true
                     :destroy destroy
                     :join true}))

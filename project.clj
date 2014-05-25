@@ -13,6 +13,7 @@
                  [clj-aws-s3 "0.3.9"]
                  [ring/ring-json "0.3.1"]
                  [clj-time "0.7.0"]
+                 [clj-http "0.9.1"]]
   :plugins [[lein-ring "0.8.7"]]
   :ring {:handler goldfinchjewellery.handler/app
          :init goldfinchjewellery.handler/init

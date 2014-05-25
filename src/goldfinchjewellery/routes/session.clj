@@ -23,15 +23,15 @@
   (if (errors?)
     (view/sessions-new email password (get-errors))
     (do
-      (session/put! :user_id (:id (users/find-by-email email)))
+      (session/put! :logged-in true)
       (redirect "/news"))))
 
 (defroutes session-routes
   (GET "/login" []
-       (if (session/get :user_id)
+       (if (session/get :logged-in)
          (redirect "/news")
          (view/sessions-new)))
   (GET "/logout" []
-       (session/remove! :user_id)
+       (session/remove! :logged-in)
        (redirect "/login"))
   (POST "/sessions" [email password] (create email password)))
