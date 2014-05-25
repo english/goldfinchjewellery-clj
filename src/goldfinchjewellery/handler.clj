@@ -8,9 +8,9 @@
             [hiccup.middleware :refer [wrap-base-url]]
             [noir.session :as session]
             [noir.util.middleware :as middleware]
+            [ring.middleware.json :refer [wrap-json-response]]
             [ring.middleware.session.cookie :refer [cookie-store]]
-            [ring.util.response :refer [redirect]]
-            [ring.middleware.json :refer [wrap-json-response]]))
+            [ring.util.response :refer [redirect]]))
 
 (defn init []
   (println "goldfinchjewellery is starting"))

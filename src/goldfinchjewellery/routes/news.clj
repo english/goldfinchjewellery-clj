@@ -1,12 +1,10 @@
 (ns goldfinchjewellery.routes.news
   (:require [compojure.core :refer [DELETE GET POST defroutes]]
-            [goldfinchjewellery.models.image :refer [delete-image image-url
-                                                     upload-image]]
+            [goldfinchjewellery.models.image :refer [delete-image image-url upload-image]]
             [goldfinchjewellery.models.news :as model]
             [goldfinchjewellery.views.news :as view]
             [noir.util.route :refer [def-restricted-routes]]
-            [noir.validation :refer [errors? get-errors has-value? rule
-                                     valid-file?]]
+            [noir.validation :refer [errors? get-errors has-value? rule valid-file?]]
             [ring.util.response :refer [redirect]]))
 
 (defn create [category content image]

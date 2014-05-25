@@ -42,5 +42,5 @@
     db
     (sql/insert-values
       :jewellery
-      [:name :gallery :description :image_url]
-      [name   gallery  description  image-url])))
+      [:name :gallery :description :image_url  :created_at]
+      [name   gallery  description  image-url  (java.util.Date.)])))

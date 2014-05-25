@@ -4,8 +4,7 @@
             [goldfinchjewellery.views.session :as view]
             [noir.session :as session]
             [noir.util.crypt :as crypt]
-            [noir.validation :refer [errors? get-errors has-value? is-email?
-                                     min-length? rule]]
+            [noir.validation :refer [errors? get-errors has-value? is-email?  min-length? rule]]
             [ring.util.response :refer [redirect]]))
 
 (defn authenticate [email password]

@@ -1,13 +1,10 @@
 (ns goldfinchjewellery.views.news
-  (:require [clj-time.coerce :refer [from-long]]
-            [clj-time.format :refer [formatters unparse]]
-            [goldfinchjewellery.models.news :as model]
-            [goldfinchjewellery.views.helpers :refer [control]]
+  (:require [goldfinchjewellery.models.news :as model]
+            [goldfinchjewellery.views.helpers :refer [control iso8601]]
             [goldfinchjewellery.views.layout :as layout]
             [hiccup.core :refer [html]]
             [hiccup.element :refer [image link-to]]
-            [hiccup.form :refer [drop-down file-upload form-to hidden-field
-                                 label submit-button text-area]]
+            [hiccup.form :refer [drop-down file-upload form-to hidden-field label submit-button text-area]]
             [markdown.core :refer [md-to-html-string]]
             [ring.util.response :refer [response]]))
 
@@ -29,11 +26,6 @@
          [:td (form-to {:class "form"} [:post (str "/news/" (:id news-item))]
                        (hidden-field "_method" "DELETE")
                        (submit-button {:class "btn btn-danger"} "Delete"))]])]]))
-
-(defn iso8601 [time]
-  (let [date-time (from-long time)
-        formatter (formatters :date-time)]
-  (unparse formatter date-time)))
 
 (defn index-json [news]
   (->> news
