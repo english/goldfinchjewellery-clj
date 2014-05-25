@@ -1,21 +1,8 @@
 (ns goldfinchjewellery.models.news
-  (:require [clojure.java.jdbc.deprecated :as sql]))
-
-(def db {:classname "org.sqlite.JDBC"
-         :subprotocol "sqlite"
-         :subname "db.sq3"})
+  (:require [clojure.java.jdbc.deprecated :as sql]
+            [goldfinchjewellery.models.migration :refer [db]]))
 
 (def categories ["Stockists" "Events & Exhibitions" "Awards" "Press"])
-
-(defn create-news-table []
-  (sql/with-connection
-    db
-    (sql/create-table :news
-                      [:id "INTEGER PRIMARY KEY AUTOINCREMENT"]
-                      [:created_at "TIMESTAMP DEFAULT CURRENT_TIMESTAMP"]
-                      [:category "TEXT NOT NULL"]
-                      [:content "TEXT NOT NULL"]
-                      [:image_url "STRING"])))
 
 (defn all []
   (sql/with-connection db

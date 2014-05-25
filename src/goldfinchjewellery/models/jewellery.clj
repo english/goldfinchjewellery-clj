@@ -1,9 +1,6 @@
 (ns goldfinchjewellery.models.jewellery
-  (:require [clojure.java.jdbc.deprecated :as sql]))
-
-(def db {:classname "org.sqlite.JDBC"
-         :subprotocol "sqlite"
-         :subname "db.sq3"})
+  (:require [clojure.java.jdbc.deprecated :as sql]
+            [goldfinchjewellery.models.migration :refer [db]]))
 
 (def galleries
   ["Peace Doves" "Weather" "Birds" "Commissions" "Branches" "Woodlands"])
