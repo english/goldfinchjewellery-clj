@@ -1,8 +1,9 @@
 (ns goldfinchjewellery.models.migration
   (:require [clojure.java.jdbc :as sql]))
 
-(def db (or (System/getenv "DATABASE_URL")
-              "postgresql://localhost:5432/goldfinchjewellery"))
+(def ^:dynamic
+  db (or (System/getenv "DATABASE_URL")
+         "postgresql://localhost:5432/goldfinchjewellery"))
 
 (defn create-users-table []
   (sql/execute! db ["create table users (
